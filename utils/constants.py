@@ -16,7 +16,7 @@ class DocumentType(Enum):
     the type of document being processed.
     """
     URL = "document_url"
-    FILE_ID = "file_id"
+    IMAGE_URL = "image_url"
 
 
 class OCRConstants:
@@ -31,7 +31,7 @@ class OCRConstants:
     # Document types mapping
     DOCUMENT_TYPES: Dict[str, str] = {
         "url": DocumentType.URL.value,
-        "file_id": DocumentType.FILE_ID.value
+        "image_url": DocumentType.IMAGE_URL.value
     }
     
     # OCR purpose identifier for API requests

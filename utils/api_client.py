@@ -89,12 +89,26 @@ class MistralClient:
                 except Exception as e:
                     raise FileError(f"Error reading file: {str(e)}", file_path_str)
                 
-                # Process the uploaded file
+                # Process the uploaded file using file_id
+                # First, check if the file is an image or a document
+                file_ext = os.path.splitext(file_path_str)[1].lower()
+                
+                if file_ext in ['.png', '.jpg', '.jpeg', '.tiff', '.tif', '.bmp']:
+                    # For image files
+                    document_type = "image_url"
+                else:
+                    # For PDF and other document files
+                    document_type = "document_url"
+                
+                # Get a signed URL for the uploaded file
+                signed_url = self.client.files.get_signed_url(file_id=uploaded_file.id)
+                
+                # Process the uploaded file using the signed URL
                 ocr_response = self.client.ocr.process(
                     model=APIConfig.OCR_MODEL,
                     document={
-                        "type": OCRConstants.DOCUMENT_TYPES["file_id"], 
-                        "file_id": uploaded_file.id
+                        "type": document_type,
+                        f"{document_type.split('_')[0]}_url": signed_url.url
                     },
                     include_image_base64=APIConfig.INCLUDE_IMAGES
                 )
