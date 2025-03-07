@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  ocr-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mistral-ocr-api:latest
+    container_name: mistral-ocr-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./output:/app/output
+    environment:
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    command: ["api", "--host", "0.0.0.0", "--port", "8000", "--workers", "2", "--log-level", "info"]
+
+  # Uncomment to add a simple UI for testing the API
+  # ocr-ui:
+  #   image: nginx:alpine
+  #   container_name: mistral-ocr-ui
+  #   ports:
+  #     - "8080:80"
+  #   volumes:
+  #     - ./ui:/usr/share/nginx/html
+  #   depends_on:
+  #     - ocr-api
+  #   restart: unless-stopped
