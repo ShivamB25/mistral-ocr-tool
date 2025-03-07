@@ -70,8 +70,6 @@ class MistralClient:
                 if not OCRConstants.is_supported_file(file_path_str):
                     raise UnsupportedFileTypeError(file_path_str)
                 
-                logger.info(f"Processing file: {file_path_str}")
-                
                 # Upload the local file
                 try:
                     with open(file_path_str, "rb") as f:
